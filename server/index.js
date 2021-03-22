@@ -1,25 +1,27 @@
-import "dotenv/config.js"
+import "dotenv/config.js";
 import express from "express";
-import bodyParser from "body-parser";
-import mongoose from "mongoose";
-import cors from "cors";
-import postRoutes from "./routes/posts.js"
-
-
 const app = express();
-app.use("/posts", postRoutes)
-
+import cors from "cors";
+app.use(cors());
+import bodyParser from "body-parser";
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
-app.use(cors());
+import mongoose from "mongoose";
 
-const PORT = process.env.PORT || 5000
+import postRoutes from "./routes/posts.js";
 
-mongoose.connect(process.env.CONNECTION_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => app.listen(PORT, () => console.log(`Server running on port: ${PORT}`)))
-.catch((err) => console.log(err));
+app.use("/posts", postRoutes);
 
-mongoose.set("useFindAndModify", false)
+const PORT = process.env.PORT || 5000;
+
+mongoose
+  .connect(process.env.CONNECTION_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("MongoDB Connected..."))
+  .catch((err) => console.log(err));
+
+mongoose.set("useFindAndModify", false);
+
+app.listen(PORT, () => console.log(`Server running on port: ${PORT}`))
