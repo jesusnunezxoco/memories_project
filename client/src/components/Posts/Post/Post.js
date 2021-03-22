@@ -15,37 +15,88 @@ import moment from "moment";
 export default function Post({ post }) {
   const classes = useStyles();
 
-  // 
-  const hashTags = post.tags.map(tag => `#${tag} `)
-  console.log(post.tags)
+  //
 
+  const createdTime = moment(post.createdAt).fromNow();
 
-  return (
-    <Card className={classes.card}>
-      <CardMedia
-        className={classes.media}
-        image={post.selectedFile}
-        title={post.title}
-      />
+  let backupImage =
+    "https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png";
+
+  const cardMedia = (
+    <CardMedia
+      className={classes.media}
+      image={post.selectedFile || backupImage}
+      title={post.title}
+    />
+  );
+  const cardOverlays = (
+    <>
       <div className={classes.overlay}>
-        <Typography varian="h6">{post.creator}</Typography>
-        <Typography variant="body2">
-          {moment(post.createdAt).fromNow()}
-        </Typography>
+        <Typography variant="h6">{post.creator}</Typography>
+        <Typography variant="body2">{createdTime}</Typography>
       </div>
       <div className={classes.overlay2}>
         <Button
           style={{ color: "white" }}
           size="small"
-          onClick={() => console.log("click")}
+          onClick={() => console.log("more info")}
         >
           <MoreHorizIcon fontSize="default" />
         </Button>
       </div>
-      <div className={classes.details}>
-      <Typography varian="body2" color="textSecondary">{hashTags}</Typography>
+    </>
+  );
 
-      </div>
+  const cardTags = (
+    <div className={classes.details}>
+      <Typography variant="body2" color="textSecondary" component="h2">
+        {post.tags.map((tag) => `#${tag} `)}
+      </Typography>
+    </div>
+  );
+
+  const cardTitle = (
+    <Typography
+      className={classes.title}
+      gutterBottom
+      variant="h5"
+      component="h2"
+    >
+      {post.title}
+    </Typography>
+  );
+
+  const cardContent = (
+    <CardContent>
+      <Typography variant="body2" color="textSecondary" component="p">
+        {post.message}
+      </Typography>
+    </CardContent>
+  );
+
+  const cardActions = (
+    <CardActions className={classes.cardActions}>
+      <Button size="small" color="primary" onClick={() => console.log("like+")}>
+        <ThumbUpAltIcon fontSize="small" /> Like {post.likeCount}{" "}
+      </Button>
+      <Button
+        size="small"
+        color="primary"
+        onClick={() => console.log("delete :(")}
+      >
+        <DeleteIcon fontSize="small" /> Delete
+      </Button>
+    </CardActions>
+  );
+
+  return (
+    <Card className={classes.card}>
+      {cardMedia}
+      {cardOverlays}
+      {cardTags}
+      {cardTitle}
+      {cardContent}
+      {cardActions}
     </Card>
   );
 }

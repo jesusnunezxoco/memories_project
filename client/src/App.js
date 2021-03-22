@@ -17,7 +17,7 @@ export default function App() {
     dispatch(getPosts())
   }, [dispatch]);
   return (
-    <Container maxwidth="lg">
+    <Container maxWidth="lg">
       <AppBar className={classes.appBar} position="static" color="inherit">
         <Typography className={classes.heading} variant="h2" align="center">
           Memories
@@ -25,13 +25,13 @@ export default function App() {
         <img
           className={classes.image}
           src={memories}
-          alt="memories"
+          alt="memories icon"
           height="60"
         ></img>
       </AppBar>
       <Grow in>
         <Container>
-          <Grid container justify="space-between" alignItems="stretch" spacing>
+          <Grid container justify="space-between" alignItems="stretch" spacing={3}>
             <Grid item xs={12} sm={7}>
               <Posts />
             </Grid>
