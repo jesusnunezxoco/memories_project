@@ -12,7 +12,7 @@ import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
 import DeleteIcon from "@material-ui/icons/Delete";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import moment from "moment";
-export default function Post({ post }) {
+export default function Post({ post, setCurrentId }) {
   const classes = useStyles();
 
   //
@@ -39,7 +39,7 @@ export default function Post({ post }) {
         <Button
           style={{ color: "white" }}
           size="small"
-          onClick={() => console.log("more info")}
+          onClick={() => setCurrentId(post._id)}
         >
           <MoreHorizIcon fontSize="default" />
         </Button>

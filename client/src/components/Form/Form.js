@@ -1,14 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TextField, Button, Typography, Paper } from "@material-ui/core";
 import FileBase from "react-file-base64";
 import useStyles from "./styles";
-import {useDispatch} from "react-redux"
-import {createPost} from "../../actions/posts"
+import { useDispatch, useSelector } from "react-redux";
+import { createPost, updatePost } from "../../actions/posts";
 
-
-export default function Form() {
-  const classes = useStyles();
-  const dispatch = useDispatch()
+export default function Form({ currentId, setCurrentId }) {
   const initialState = {
     creator: "",
     title: "",
@@ -17,15 +14,41 @@ export default function Form() {
     selectedFile: "",
   };
   const [postData, setPostData] = useState(initialState);
+  const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const post = useSelector((state) =>
+    // if an existing post is being edited
+    // find that post using currentId from the state
+    currentId ? state.posts.find((post) => post._id === currentId) : null
+  );
+
+  // if a current post was selected
+  // set the form's postData to the current post
+  // so user can see previous information and edit rather than recreate
+  useEffect(() => {
+    if (post) setPostData(post);
+  }, [post]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(createPost(postData))
-    setPostData(initialState)
+    if (currentId) {
+      // if an existing post is selected
+      // send currentId (via params) and postData (via body)
+      // currentId finds the post that needs to be updated
+      // postData provides the updated post
+      console.log(currentId)
+      dispatch(updatePost(currentId, postData));
+    } else {
+      // send postData via body to create a new post
+      dispatch(createPost(postData));
+    }
+    // reset the state once something is submitted
+    clear()
   };
 
-  const clear = (event) => {
-    event.preventDefault();
+  const clear = () => {
+    setCurrentId(null)
     setPostData(initialState);
   };
 
@@ -34,9 +57,11 @@ export default function Form() {
       <form
         autoComplete
         className={`${classes.root} ${classes.form}`}
-        onSubmit={handleSubmit}
+        onSubmit={() => handleSubmit()}
       >
-        <Typography variant="h6">Creating a Memory</Typography>
+        <Typography variant="h6">
+          ${currentId ? "Editing" : "Creating"} a Memory
+        </Typography>
         <TextField
           name="creator"
           variant="outlined"
@@ -71,13 +96,15 @@ export default function Form() {
           label="Tags"
           fullWidth
           value={postData.tags}
-          onChange={(e) => setPostData({ ...postData, tags: e.target.value })}
+          onChange={(e) =>
+            setPostData({ ...postData, tags: e.target.value.split(",") })
+          }
         />
         <div className={classes.fileInput}>
           <FileBase
             type="file"
             multiple={false}
-            onDone={({base64}) =>
+            onDone={({ base64 }) =>
               setPostData({ ...postData, selectedFile: base64 })
             }
           ></FileBase>
@@ -89,8 +116,9 @@ export default function Form() {
           size="large"
           type="submit"
           fullWidth
+          onClick={handleSubmit}
         >
-          Submit
+          {currentId ? "Update Post" : "Submit Post"}
         </Button>
         <Button
           className={classes.buttonSubmit}
