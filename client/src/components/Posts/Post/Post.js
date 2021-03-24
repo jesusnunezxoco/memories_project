@@ -1,4 +1,6 @@
 import React from "react";
+import {useDispatch} from "react-redux"
+import {deletePost} from "../../../actions/posts"
 import useStyles from "./styles";
 import {
   Card,
@@ -15,7 +17,7 @@ import moment from "moment";
 export default function Post({ post, setCurrentId }) {
   const classes = useStyles();
 
-  //
+  const dispatch = useDispatch()
 
   const createdTime = moment(post.createdAt).fromNow();
 
@@ -82,7 +84,7 @@ export default function Post({ post, setCurrentId }) {
       <Button
         size="small"
         color="primary"
-        onClick={() => console.log("delete :(")}
+        onClick={() => dispatch(deletePost(post._id))}
       >
         <DeleteIcon fontSize="small" /> Delete
       </Button>

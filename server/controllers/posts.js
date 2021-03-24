@@ -13,7 +13,7 @@ export const getPosts = async (req, res) => {
 };
 
 export const getPost = async (req, res) => {
-  let {id} = req.params
+  let { id } = req.params;
   try {
     const post = await PostMessage.findById(id);
     res.status(200).json(post);
@@ -51,11 +51,14 @@ export const updatePost = async (req, res) => {
 };
 
 export const deletePost = async (req, res) => {
-  const requestedId = req.params.id;
-
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return res.status(404).send(`No posts with id: ${id}`);
+  
   try {
-    console.log("Deleted ID: ", requestedId);
+    await PostMessage.findByIdAndDelete(id);
+    res.status(200).json({ message: `Post message deleted with ID: ${id}` });
   } catch (error) {
-    res.status(409).json(error);
+    res.status(404).json(error);
   }
 };
