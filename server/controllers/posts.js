@@ -5,7 +5,9 @@ import PostMessage from "../models/postMessage.js";
 
 export const getPosts = async (req, res) => {
   try {
-    const posts = await PostMessage.find();
+    // get posts from newest to oldest
+    const posts = await PostMessage.find().sort({createdAt: -1});
+    // send posts as JSON
     res.status(200).json(posts);
   } catch (error) {
     res.status(404).json(error);
@@ -15,7 +17,9 @@ export const getPosts = async (req, res) => {
 export const getPost = async (req, res) => {
   let { id } = req.params;
   try {
+    // query post from DB
     const post = await PostMessage.findById(id);
+    // send a post as JSON
     res.status(200).json(post);
   } catch (error) {
     res.status(404).json(error);
@@ -24,9 +28,10 @@ export const getPost = async (req, res) => {
 
 export const createPost = async (req, res) => {
   const { ...post } = req.body;
+  // make a new post instance using the PostMessage schema
   const newPost = new PostMessage(post);
-  console.log(post);
   try {
+    // save newPost to the DB
     await newPost.save();
     res.status(201).json(newPost);
   } catch (error) {
@@ -54,7 +59,7 @@ export const deletePost = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(404).send(`No posts with id: ${id}`);
-  
+
   try {
     await PostMessage.findByIdAndDelete(id);
     res.status(200).json({ message: `Post message deleted with ID: ${id}` });

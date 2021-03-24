@@ -44,10 +44,12 @@ export default function Form({ currentId, setCurrentId }) {
       dispatch(createPost(postData));
     }
     // reset the state once something is submitted
-    clear()
+    setCurrentId(null)
+    setPostData(initialState);
   };
 
-  const clear = () => {
+  const clear = (event) => {
+    event.preventDefault()
     setCurrentId(null)
     setPostData(initialState);
   };
@@ -60,7 +62,7 @@ export default function Form({ currentId, setCurrentId }) {
         onSubmit={() => handleSubmit()}
       >
         <Typography variant="h6">
-          ${currentId ? "Editing" : "Creating"} a Memory
+          {currentId ? "Editing" : "Creating"} a Memory
         </Typography>
         <TextField
           name="creator"
