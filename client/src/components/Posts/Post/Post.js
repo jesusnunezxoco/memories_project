@@ -1,6 +1,6 @@
 import React from "react";
 import {useDispatch} from "react-redux"
-import {deletePost} from "../../../actions/posts"
+import {deletePost, likePost} from "../../../actions/posts"
 import useStyles from "./styles";
 import {
   Card,
@@ -78,7 +78,7 @@ export default function Post({ post, setCurrentId }) {
 
   const cardActions = (
     <CardActions className={classes.cardActions}>
-      <Button size="small" color="primary" onClick={() => console.log("like+")}>
+      <Button size="small" color="primary" onClick={() => dispatch(likePost(post._id))}>
         <ThumbUpAltIcon fontSize="small" /> Like {post.likeCount}{" "}
       </Button>
       <Button
