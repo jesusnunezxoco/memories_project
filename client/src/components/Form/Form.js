@@ -55,7 +55,7 @@ export default function Form({ currentId, setCurrentId }) {
   return (
     <Paper className={classes.paper}>
       <form
-        autoComplete
+        autoComplete="true"
         className={`${classes.root} ${classes.form}`}
         onSubmit={() => handleSubmit()}
       >
