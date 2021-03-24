@@ -15,6 +15,7 @@ export default function Posts({currentId, setCurrentId}) {
       className={classes.container}
       container
       alignItems="stretch"
+      
       spacing={3}
     >
       {posts.map((post) => (
