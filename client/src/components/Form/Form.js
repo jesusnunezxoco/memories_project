@@ -10,7 +10,7 @@ export default function Form({ currentId, setCurrentId }) {
     creator: "",
     title: "",
     message: "",
-    tags: "",
+    tags: [],
     selectedFile: "",
   };
   const [postData, setPostData] = useState(initialState);
@@ -37,23 +37,116 @@ export default function Form({ currentId, setCurrentId }) {
       // send currentId (via params) and postData (via body)
       // currentId finds the post that needs to be updated
       // postData provides the updated post
-      console.log(currentId)
+      console.log(currentId);
       dispatch(updatePost(currentId, postData));
     } else {
       // send postData via body to create a new post
+      console.log(postData);
       dispatch(createPost(postData));
     }
     // reset the state once something is submitted
-    setCurrentId(null)
+    setCurrentId(null);
     setPostData(initialState);
   };
 
   const clear = (event) => {
-    event.preventDefault()
-    setCurrentId(null)
+    event.preventDefault();
+    setCurrentId(null);
     setPostData(initialState);
   };
 
+  // *FORM SUB-COMPONENTS
+  const formTitle = (
+    <Typography variant="h6">
+      {currentId ? "Editing" : "Creating"} a Memory
+    </Typography>
+  );
+
+  const inputCreator = (
+    <TextField
+      name="creator"
+      variant="outlined"
+      label="Creator"
+      fullWidth
+      value={postData.creator}
+      onChange={(e) => setPostData({ ...postData, creator: e.target.value })}
+    />
+  );
+
+  const inputTitle = (
+    <TextField
+      name="title"
+      variant="outlined"
+      label="Title"
+      fullWidth
+      value={postData.title}
+      onChange={(e) => setPostData({ ...postData, title: e.target.value })}
+    />
+  );
+
+  const inputMessage = (
+    <TextField
+      name="message"
+      variant="outlined"
+      label="Message"
+      fullWidth
+      value={postData.message}
+      onChange={(e) => setPostData({ ...postData, message: e.target.value })}
+    />
+  );
+
+  const inputFile = (
+    <div className={classes.fileInput}>
+      <FileBase
+        type="file"
+        multiple={false}
+        onDone={({ base64 }) =>
+          setPostData({ ...postData, selectedFile: base64 })
+        }
+      ></FileBase>
+    </div>
+  );
+  
+  const inputTags = (
+    <TextField
+      name="tags"
+      variant="outlined"
+      label="Tags"
+      fullWidth
+      value={postData.tags.join(", ")}
+      onChange={(event) =>
+        setPostData({ ...postData, tags: event.target.value.split(", ") })
+      }
+    />
+  );
+  
+  const submitButton = (
+    <Button
+      className={classes.buttonSubmit}
+      variant="contained"
+      color="primary"
+      size="large"
+      type="submit"
+      fullWidth
+      onClick={handleSubmit}
+    >
+      {currentId ? "Update Post" : "Submit Post"}
+    </Button>
+  );
+
+  const resetButton = (
+    <Button
+      className={classes.buttonSubmit}
+      onClick={clear}
+      variant="contained"
+      color="secondary"
+      size="small"
+      type="submit"
+      fullWidth
+    >
+      Clear
+    </Button>
+  );
   return (
     <Paper className={classes.paper}>
       <form
@@ -61,78 +154,14 @@ export default function Form({ currentId, setCurrentId }) {
         className={`${classes.root} ${classes.form}`}
         onSubmit={() => handleSubmit()}
       >
-        <Typography variant="h6">
-          {currentId ? "Editing" : "Creating"} a Memory
-        </Typography>
-        <TextField
-          name="creator"
-          variant="outlined"
-          label="Creator"
-          fullWidth
-          value={postData.creator}
-          onChange={(e) =>
-            setPostData({ ...postData, creator: e.target.value })
-          }
-        />
-        <TextField
-          name="title"
-          variant="outlined"
-          label="Title"
-          fullWidth
-          value={postData.title}
-          onChange={(e) => setPostData({ ...postData, title: e.target.value })}
-        />
-        <TextField
-          name="message"
-          variant="outlined"
-          label="Message"
-          fullWidth
-          value={postData.message}
-          onChange={(e) =>
-            setPostData({ ...postData, message: e.target.value })
-          }
-        />
-        <TextField
-          name="tags"
-          variant="outlined"
-          label="Tags"
-          fullWidth
-          value={postData.tags}
-          onChange={(e) =>
-            setPostData({ ...postData, tags: e.target.value.split(",") })
-          }
-        />
-        <div className={classes.fileInput}>
-          <FileBase
-            type="file"
-            multiple={false}
-            onDone={({ base64 }) =>
-              setPostData({ ...postData, selectedFile: base64 })
-            }
-          ></FileBase>
-        </div>
-        <Button
-          className={classes.buttonSubmit}
-          variant="contained"
-          color="primary"
-          size="large"
-          type="submit"
-          fullWidth
-          onClick={handleSubmit}
-        >
-          {currentId ? "Update Post" : "Submit Post"}
-        </Button>
-        <Button
-          className={classes.buttonSubmit}
-          onClick={clear}
-          variant="contained"
-          color="secondary"
-          size="small"
-          type="submit"
-          fullWidth
-        >
-          Clear
-        </Button>
+        {formTitle}
+        {inputTitle}
+        {inputCreator}
+        {inputMessage}
+        {inputTags}
+        {inputFile}
+        {submitButton}
+        {resetButton}
       </form>
     </Paper>
   );
